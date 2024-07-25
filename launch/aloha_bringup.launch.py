@@ -218,11 +218,11 @@ def launch_setup(context, *args, **kwargs):
 
     rs_actions = []
     mobile_cams = [
-        LaunchConfiguration('cam_high_name'),
+        # LaunchConfiguration('cam_high_name'),
         LaunchConfiguration('cam_left_wrist_name'),
         LaunchConfiguration('cam_right_wrist_name')
     ]
-    all_cams = mobile_cams + [LaunchConfiguration('cam_low_name')]
+    all_cams = mobile_cams# + [LaunchConfiguration('cam_low_name')]
     camera_names = mobile_cams if is_mobile else all_cams
     for camera_name in camera_names:
         rs_actions.append(
