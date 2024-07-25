@@ -8,6 +8,8 @@ from cv_bridge import CvBridge, CvBridgeError
 import aria.sdk as aria
 import numpy as np
 from projectaria_tools.core.sensor_data import ImageDataRecord
+from projectaria_tools.core import calibration
+import signal
 
 import sys
 
@@ -24,6 +26,15 @@ import sys
 
 # if __name__ == "__main__":
 #     main()
+
+def undistort(raw_image, rgb_calib):
+    warped_calib = calibration.get_linear_camera_calibration(
+        480, 640, 133.25430222 * 2, "camera-rgb"
+    )
+    unwarped_img = calibration.distort_by_calibration(raw_image, warped_calib, rgb_calib)
+    warped_rot = np.rot90(unwarped_img, k=3)
+
+    return warped_rot
 
 class ImagePublisher(Node):
     def __init__(self):
@@ -50,7 +61,7 @@ class ImagePublisher(Node):
 
         # Set config
         streaming_config = aria.StreamingConfig()
-        streaming_config.profile_name = "profile18"
+        streaming_config.profile_name = "profile15"
         streaming_config.streaming_interface = aria.StreamingInterface.Usb
 
         # get security certs
@@ -58,9 +69,13 @@ class ImagePublisher(Node):
         streaming_manager.streaming_config = streaming_config
 
         # print("STREAM STATE", streaming_manager.streaming_state.value)
-        if streaming_manager.streaming_state.value == 3:
+        # if streaming_manager.streaming_state.value != 4:
+        #     streaming_manager.stop_streaming()
+        try:
+            streaming_manager.start_streaming()
+        except RuntimeError:
             streaming_manager.stop_streaming()
-        streaming_manager.start_streaming()
+            streaming_manager.start_streaming()
 
 
         # config to RGB camera stream
@@ -92,6 +107,12 @@ class ImagePublisher(Node):
         self.observer = observer
         self.device = device
 
+        # rgb_calib
+        sensors_calib_json = streaming_manager.sensors_calibration()
+        sensors_calib = calibration.device_calibration_from_json_string(sensors_calib_json)
+        rgb_calib = sensors_calib.get_camera_calib("camera-rgb")
+        self.rgb_calib = rgb_calib
+
     def timer_callback(self):
         # while True:
         #     try:
@@ -118,9 +139,10 @@ class ImagePublisher(Node):
         if self.observer.rgb_image is not None and rclpy.ok():
             rgb_image = cv2.cvtColor(self.observer.rgb_image, cv2.COLOR_BGR2RGB)
             # cv2.imshow(rgb_window, np.rot90(rgb_image, -1))
+            rgb_image = undistort(rgb_image, self.rgb_calib)
+            self.pub.publish(self.bridge.cv2_to_imgmsg(rgb_image, "rgb8"))
 
             self.observer.rgb_image = None
-            self.pub.publish(self.bridge.cv2_to_imgmsg(rgb_image, "rgb8"))
 
 
 
@@ -135,14 +157,26 @@ class ImagePublisher(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-
     ip = ImagePublisher()
     print("Publishing...")
-    rclpy.spin(ip)
+
+    def signal_handler(sig, frame):
+        # ip.shutdown()
+        rclpy.shutdown()
+        ip.destroy_node()
     
-    print("reached here")
-    ip.destroy_node()
-    rclpy.shutdown()
+    signal.signal(signal.SIGINT, signal_handler)
+    
+
+    rclpy.spin(ip)
+    # try:
+    #     rclpy.spin(ip)
+    # except KeyboardInterrupt:
+    #     pass
+    # finally:
+    #     print("reached here")
+    #     ip.destroy_node()
+    #     # rclpy.shutdown()
 
 if __name__ == '__main__':
     main()
