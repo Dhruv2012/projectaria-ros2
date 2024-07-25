@@ -250,7 +250,14 @@ def launch_setup(context, *args, **kwargs):
       condition=IfCondition(LaunchConfiguration('use_cameras')),
       actions=rs_actions,
     )
-
+    
+    stream_aria_ros_node = Node(
+        package='aloha',
+        executable='stream_aria_ros',
+        name='cam_aria',
+        output='screen'
+    )
+    
     slate_base_node = Node(
         package='interbotix_slate_driver',
         executable='slate_base_node',
@@ -319,6 +326,7 @@ def launch_setup(context, *args, **kwargs):
         follower_right_transform_broadcaster_node,
         realsense_ros_launch_includes_group_action,
         slate_base_node,
+        stream_aria_ros_node,
         joystick_teleop_node,
         joy_node,
         rviz2_node,
@@ -498,6 +506,13 @@ def generate_launch_description():
                 'rviz',
                 'aloha.rviz',
             ]),
+        )
+    )
+    declared_arguments.append(Node(
+            package='aloha',
+            executable='stream_aria_ros',
+            name='cam_aria',
+            output='screen'
         )
     )
     declared_arguments.extend(

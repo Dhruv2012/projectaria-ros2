@@ -28,7 +28,7 @@ setup(
     license='BSD',
     tests_require=['pytest'],
     entry_points={
-        'console_scripts': [
+        'console_scripts': ['stream_aria_ros = aloha.stream_aria_ros:main'
         ],
     },
 )
