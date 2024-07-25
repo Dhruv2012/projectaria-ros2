@@ -41,7 +41,7 @@ class ImagePublisher(Node):
         super().__init__("cam_aria")
         self.bridge = CvBridge()
         # self.cap = cv2.VideoCapture(0)
-        self.pub = self.create_publisher(Image, "/aria", 10)
+        self.pub = self.create_publisher(Image, "/cam_high", 10)
         # self.rgb8pub = self.create_publisher(Image, "/image/rgb", 10)
         # self.bgr8pub = self.create_publisher(Image, "/image/bgr", 10)
         # self.mono8pub = self.create_publisher(Image, "/image/mono", 10)

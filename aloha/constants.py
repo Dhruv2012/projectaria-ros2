@@ -7,7 +7,7 @@ import os
 # Set to 'true' for Mobile ALOHA, 'false' for Stationary ALOHA
 IS_MOBILE = os.environ.get('INTERBOTIX_ALOHA_IS_MOBILE', 'true').lower() == 'true'
 
-COLOR_IMAGE_TOPIC_NAME = '{}/color/image_rect_raw'  # for RealSense cameras
+COLOR_IMAGE_TOPIC_NAME = '{}/camera/color/image_rect_raw'  # for RealSense cameras
 
 DATA_DIR = os.path.expanduser('~/aloha_data')
 
@@ -41,7 +41,7 @@ FOLLOWER_GRIPPER_POSITION_CLOSE = 0.0440
 LEADER_GRIPPER_JOINT_OPEN = 0.8298
 LEADER_GRIPPER_JOINT_CLOSE = -0.0552
 
-FOLLOWER_GRIPPER_JOINT_OPEN = 1.6214
+FOLLOWER_GRIPPER_JOINT_OPEN = 2.6
 FOLLOWER_GRIPPER_JOINT_CLOSE = 0.6197
 
 ### Helper functions
@@ -109,6 +109,11 @@ TASK_CONFIGS = {
     'aloha_stationary_dummy':{
         'dataset_dir': DATA_DIR + '/aloha_stationary_dummy',
         'episode_len': 800,
+        'camera_names': ['cam_high', 'cam_left_wrist', 'cam_right_wrist']
+    },
+    'OBOO_RWA':{
+        'dataset_dir': DATA_DIR + '/OBOO_RWA',
+        'episode_len': 700,
         'camera_names': ['cam_high', 'cam_left_wrist', 'cam_right_wrist']
     },
 }

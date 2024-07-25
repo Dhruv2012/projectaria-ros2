@@ -28,7 +28,7 @@ class ImageRecorder:
         if is_mobile:
             self.camera_names = ['cam_high', 'cam_left_wrist', 'cam_right_wrist']
         else:
-            self.camera_names = ['cam_high', 'cam_low', 'cam_left_wrist', 'cam_right_wrist']
+            self.camera_names = ['cam_high', 'cam_left_wrist', 'cam_right_wrist']
 
         for cam_name in self.camera_names:
             setattr(self, f'{cam_name}_image', None)
@@ -36,15 +36,18 @@ class ImageRecorder:
             setattr(self, f'{cam_name}_nsecs', None)
             if cam_name == 'cam_high':
                 callback_func = self.image_cb_cam_high
+                topic = "/cam_high"
             elif cam_name == 'cam_low':
                 callback_func = self.image_cb_cam_low
             elif cam_name == 'cam_left_wrist':
                 callback_func = self.image_cb_cam_left_wrist
+                topic = "/cam_left_wrist/camera/color/image_rect_raw"
             elif cam_name == 'cam_right_wrist':
+                topic = "/cam_right_wrist/camera/color/image_rect_raw"
                 callback_func = self.image_cb_cam_right_wrist
             else:
                 raise NotImplementedError
-            topic = COLOR_IMAGE_TOPIC_NAME.format(cam_name)
+            # topic = COLOR_IMAGE_TOPIC_NAME.format(cam_name)
             node.create_subscription(Image, topic, callback_func, 20)
             if self.is_debug:
                 setattr(self, f'{cam_name}_timestamps', deque(maxlen=50))

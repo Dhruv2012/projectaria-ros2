@@ -27,7 +27,7 @@ from interbotix_common_modules.common_robot.robot import (
     InterbotixRobotNode,
 )
 from interbotix_xs_modules.xs_robot.arm import InterbotixManipulatorXS
-from interbotix_xs_modules.xs_robot.slate import InterbotixSlate
+# from interbotix_xs_modules.xs_robot.slate import InterbotixSlate
 from interbotix_xs_msgs.msg import JointSingleCommand
 import matplotlib.pyplot as plt
 import numpy as np
@@ -219,7 +219,6 @@ class RealEnv:
         obs['qvel'] = self.get_qvel()
         obs['effort'] = self.get_effort()
         obs['images'] = self.get_images()
-        obs['base_vel'] = self.get_base_vel()
         if get_base_vel:
             obs['base_vel'] = self.get_base_vel()
         return obs
