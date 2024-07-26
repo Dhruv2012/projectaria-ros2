@@ -71,11 +71,12 @@ class ImagePublisher(Node):
         # print("STREAM STATE", streaming_manager.streaming_state.value)
         # if streaming_manager.streaming_state.value != 4:
         #     streaming_manager.stop_streaming()
-        try:
-            streaming_manager.start_streaming()
-        except RuntimeError:
-            streaming_manager.stop_streaming()
-            streaming_manager.start_streaming()
+        
+        # try:
+        streaming_manager.start_streaming()
+        # except RuntimeError:
+        #     streaming_manager.stop_streaming()
+        #     streaming_manager.start_streaming()
 
 
         # config to RGB camera stream
@@ -156,27 +157,20 @@ class ImagePublisher(Node):
         super().destroy_node()
 
 def main(args=None):
+    def signal_handler(sig, frame):
+        # ip.shutdown()
+        ip.destroy_node()
+        # rclpy.shutdown()
+        exit()
+    signal.signal(signal.SIGINT, signal_handler)
+
+
     rclpy.init(args=args)
     ip = ImagePublisher()
     print("Publishing...")
 
-    def signal_handler(sig, frame):
-        # ip.shutdown()
-        rclpy.shutdown()
-        ip.destroy_node()
-    
-    signal.signal(signal.SIGINT, signal_handler)
     
 
     rclpy.spin(ip)
-    # try:
-    #     rclpy.spin(ip)
-    # except KeyboardInterrupt:
-    #     pass
-    # finally:
-    #     print("reached here")
-    #     ip.destroy_node()
-    #     # rclpy.shutdown()
-
 if __name__ == '__main__':
     main()

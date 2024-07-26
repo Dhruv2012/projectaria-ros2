@@ -1,18 +1,3 @@
-/**:
-  camera:
-    ros__parameters:
-      enable_color: true
-      rgb_camera:
-        profile: '640,480,60'
-        enable_auto_exposure: false
-      depth_module:
-        profile: '640,480,60'
-        enable_auto_exposure: false
-      enable_depth: false
-      enable_infra: false
-      enable_infra1: false
-      enable_infra2: false
-
 # $(var cam_high_name):
 #   camera:
 #     ros__parameters:
@@ -28,9 +13,29 @@ $(var cam_right_wrist_name):
     ros__parameters:
       # serial_no: "235123071335"
       serial_no: "230422271850"
+      rgb_camera:
+        enable_auto_exposure: false
+      depth_module:
+        color_profile: '640,480,60'
+        enable_auto_exposure: false
+      enable_color: true
+      enable_depth: false
+      enable_infra: false
+      enable_infra1: false
+      enable_infra2: false
 
 $(var cam_left_wrist_name):
   camera:
     ros__parameters:
       # serial_no: "235123072997"
       serial_no: "218622278241"
+      rgb_camera:
+        enable_auto_exposure: false
+      depth_module:
+        color_profile: '640,480,60'
+        enable_auto_exposure: false
+      enable_color: true
+      enable_depth: false
+      enable_infra: false
+      enable_infra1: false
+      enable_infra2: false

@@ -9,7 +9,8 @@ IS_MOBILE = os.environ.get('INTERBOTIX_ALOHA_IS_MOBILE', 'true').lower() == 'tru
 
 COLOR_IMAGE_TOPIC_NAME = '{}/camera/color/image_rect_raw'  # for RealSense cameras
 
-DATA_DIR = os.path.expanduser('~/aloha_data')
+# DATA_DIR = os.path.expanduser('~/aloha_data')
+DATA_DIR = "~/interbotix_ws/src/aloha-ros2/scripts/data"
 
 ### ALOHA Fixed Constants
 DT = 0.02
