@@ -68,6 +68,7 @@ class RealEnv:
     def __init__(
         self,
         node: InterbotixRobotNode,
+        active_arms: str = "both",
         setup_robots: bool = True,
         setup_base: bool = False,
         is_mobile: bool = IS_MOBILE,
@@ -84,6 +85,7 @@ class RealEnv:
             True. Only applies when IS_MOBILE is True
         :raises ValueError: On providing False for setup_base but the robot is not mobile
         """
+        self.active_arms = active_arms
         self.follower_bot_left = InterbotixManipulatorXS(
             robot_model='vx300s',
             group_name='arm',
@@ -91,7 +93,8 @@ class RealEnv:
             robot_name='follower_left',
             node=node,
             iterative_update_fk=False,
-        )
+        ) if active_arms in ["left", "both"] else None
+
         self.follower_bot_right = InterbotixManipulatorXS(
             robot_model='vx300s',
             group_name='arm',
@@ -99,10 +102,10 @@ class RealEnv:
             robot_name='follower_right',
             node=node,
             iterative_update_fk=False,
-        )
+        ) if active_arms in ["right", "both"] else None
 
-        self.recorder_left = Recorder('left', node=node)
-        self.recorder_right = Recorder('right', node=node)
+        self.recorder_left = Recorder('left', node=node) if active_arms in ["left", "both"] else None
+        self.recorder_right = Recorder('right', node=node) if active_arms in ["right", "both"] else None
         self.image_recorder = ImageRecorder(node=node, is_mobile=IS_MOBILE)
         self.gripper_command = JointSingleCommand(name='gripper')
 
@@ -131,12 +134,14 @@ class RealEnv:
         self.base.base.set_motor_torque(torque_enable)
 
     def setup_robots(self):
-        setup_follower_bot(self.follower_bot_left)
-        setup_follower_bot(self.follower_bot_right)
+        if self.active_arms in ["left", "both"]:
+            setup_follower_bot(self.follower_bot_left)
+        if self.active_arms in ["right", "both"]:
+            setup_follower_bot(self.follower_bot_right)
 
     def get_qpos(self):
-        left_qpos_raw = self.recorder_left.qpos
-        right_qpos_raw = self.recorder_right.qpos
+        left_qpos_raw = self.recorder_left.qpos if self.recorder_left else [0] * 9
+        right_qpos_raw = self.recorder_right.qpos if self.recorder_right else [0] * 9
         left_arm_qpos = left_qpos_raw[:6]
         right_arm_qpos = right_qpos_raw[:6]
         left_gripper_qpos = [FOLLOWER_GRIPPER_POSITION_NORMALIZE_FN(left_qpos_raw[7])]
@@ -146,8 +151,8 @@ class RealEnv:
         )
 
     def get_qvel(self):
-        left_qvel_raw = self.recorder_left.qvel
-        right_qvel_raw = self.recorder_right.qvel
+        left_qvel_raw = self.recorder_left.qvel if self.recorder_left else [0] * 9
+        right_qvel_raw = self.recorder_right.qvel if self.recorder_right else [0] * 9
         left_arm_qvel = left_qvel_raw[:6]
         right_arm_qvel = right_qvel_raw[:6]
         left_gripper_qvel = [FOLLOWER_GRIPPER_VELOCITY_NORMALIZE_FN(left_qvel_raw[7])]
@@ -157,8 +162,8 @@ class RealEnv:
         )
 
     def get_effort(self):
-        left_effort_raw = self.recorder_left.effort
-        right_effort_raw = self.recorder_right.effort
+        left_effort_raw = self.recorder_left.effort if self.recorder_left else [0] * 9
+        right_effort_raw = self.recorder_right.effort if self.recorder_right else [0] * 9
         left_robot_effort = left_effort_raw[:7]
         right_robot_effort = right_effort_raw[:7]
         return np.concatenate([left_robot_effort, right_robot_effort])
@@ -173,45 +178,37 @@ class RealEnv:
 
     def set_gripper_pose(
         self,
-        left_gripper_desired_pos_normalized,
-        right_gripper_desired_pos_normalized
+        left_gripper_desired_pos_normalized=None,
+        right_gripper_desired_pos_normalized=None
     ):
-        left_gripper_desired_joint = FOLLOWER_GRIPPER_JOINT_UNNORMALIZE_FN(
-            left_gripper_desired_pos_normalized
-        )
-        self.gripper_command.cmd = left_gripper_desired_joint
-        self.follower_bot_left.gripper.core.pub_single.publish(self.gripper_command)
+        if self.active_arms in ["left", "both"] and left_gripper_desired_pos_normalized is not None:
+            left_gripper_desired_joint = FOLLOWER_GRIPPER_JOINT_UNNORMALIZE_FN(
+                left_gripper_desired_pos_normalized
+            )
+            self.gripper_command.cmd = left_gripper_desired_joint
+            self.follower_bot_left.gripper.core.pub_single.publish(self.gripper_command)
 
-        right_gripper_desired_joint = FOLLOWER_GRIPPER_JOINT_UNNORMALIZE_FN(
-            right_gripper_desired_pos_normalized
-        )
-        self.gripper_command.cmd = right_gripper_desired_joint
-        self.follower_bot_right.gripper.core.pub_single.publish(self.gripper_command)
+        if self.active_arms in ["right", "both"] and right_gripper_desired_pos_normalized is not None:
+            right_gripper_desired_joint = FOLLOWER_GRIPPER_JOINT_UNNORMALIZE_FN(
+                right_gripper_desired_pos_normalized
+            )
+            self.gripper_command.cmd = right_gripper_desired_joint
+            self.follower_bot_right.gripper.core.pub_single.publish(self.gripper_command)
 
     def _reset_joints(self):
         reset_position = START_ARM_POSE[:6]
-        move_arms(
-            [self.follower_bot_left, self.follower_bot_right],
-            [reset_position, reset_position],
-            moving_time=1.0,
-        )
+        if self.active_arms in ["left", "both"]:
+            move_arms([self.follower_bot_left], [reset_position], moving_time=1.0)
+        if self.active_arms in ["right", "both"]:
+            move_arms([self.follower_bot_right], [reset_position], moving_time=1.0)
 
     def _reset_gripper(self):
-        """
-        Set to position mode and do position resets.
-
-        First open then close, then change back to PWM mode
-        """
-        move_grippers(
-            [self.follower_bot_left, self.follower_bot_right],
-            [FOLLOWER_GRIPPER_JOINT_OPEN] * 2,
-            moving_time=0.5,
-        )
-        move_grippers(
-            [self.follower_bot_left, self.follower_bot_right],
-            [FOLLOWER_GRIPPER_JOINT_CLOSE] * 2,
-            moving_time=1.0,
-        )
+        if self.active_arms in ["left", "both"]:
+            move_grippers([self.follower_bot_left], [FOLLOWER_GRIPPER_JOINT_OPEN], moving_time=0.5)
+            move_grippers([self.follower_bot_left], [FOLLOWER_GRIPPER_JOINT_CLOSE], moving_time=1.0)
+        if self.active_arms in ["right", "both"]:
+            move_grippers([self.follower_bot_right], [FOLLOWER_GRIPPER_JOINT_OPEN], moving_time=0.5)
+            move_grippers([self.follower_bot_right], [FOLLOWER_GRIPPER_JOINT_CLOSE], moving_time=1.0)
 
     def get_observation(self, get_base_vel=False):
         obs = collections.OrderedDict()
@@ -228,9 +225,10 @@ class RealEnv:
 
     def reset(self, fake=False):
         if not fake:
-            # Reboot follower robot gripper motors
-            self.follower_bot_left.core.robot_reboot_motors('single', 'gripper', True)
-            self.follower_bot_right.core.robot_reboot_motors('single', 'gripper', True)
+            if self.active_arms in ["left", "both"]:
+                self.follower_bot_left.core.robot_reboot_motors('single', 'gripper', True)
+            if self.active_arms in ["right", "both"]:
+                self.follower_bot_right.core.robot_reboot_motors('single', 'gripper', True)
             self._reset_joints()
             self._reset_gripper()
         return dm_env.TimeStep(
@@ -241,12 +239,14 @@ class RealEnv:
         )
 
     def step(self, action, base_action=None, get_base_vel=False, get_obs=True):
-        state_len = int(len(action) / 2)
-        left_action = action[:state_len]
-        right_action = action[state_len:]
-        self.follower_bot_left.arm.set_joint_positions(left_action[:6], blocking=False)
-        self.follower_bot_right.arm.set_joint_positions(right_action[:6], blocking=False)
-        self.set_gripper_pose(left_action[-1], right_action[-1])
+        if self.active_arms in ["left", "both"]:
+            left_action = action[:7]
+            self.follower_bot_left.arm.set_joint_positions(left_action[:6], blocking=False)
+            self.set_gripper_pose(left_action[-1], None)
+        if self.active_arms in ["right", "both"]:
+            right_action = action[-7:]
+            self.follower_bot_right.arm.set_joint_positions(right_action[:6], blocking=False)
+            self.set_gripper_pose(None, right_action[-1])
         if base_action is not None:
             base_action_linear, base_action_angular = base_action
             self.base.base.command_velocity_xyaw(x=base_action_linear, yaw=base_action_angular)
@@ -263,21 +263,22 @@ class RealEnv:
 
 def get_action(
     leader_bot_left: InterbotixManipulatorXS,
-    leader_bot_right: InterbotixManipulatorXS
+    leader_bot_right: InterbotixManipulatorXS,
+    active_arms: str
 ):
     action = np.zeros(14)  # 6 joint + 1 gripper, for two arms
-    # Arm actions
-    action[:6] = leader_bot_left.core.joint_states.position[:6]
-    action[7:7+6] = leader_bot_right.core.joint_states.position[:6]
-    # Gripper actions
-    action[6] = LEADER_GRIPPER_JOINT_NORMALIZE_FN(leader_bot_left.core.joint_states.position[6])
-    action[7+6] = LEADER_GRIPPER_JOINT_NORMALIZE_FN(leader_bot_right.core.joint_states.position[6])
-
+    if active_arms in ["left", "both"]:
+        action[:6] = leader_bot_left.core.joint_states.position[:6]
+        action[6] = LEADER_GRIPPER_JOINT_NORMALIZE_FN(leader_bot_left.core.joint_states.position[6])
+    if active_arms in ["right", "both"]:
+        action[7:7+6] = leader_bot_right.core.joint_states.position[:6]
+        action[13] = LEADER_GRIPPER_JOINT_NORMALIZE_FN(leader_bot_right.core.joint_states.position[6])
     return action
 
 
 def make_real_env(
     node: InterbotixRobotNode = None,
+    active_arms: str = "both",
     setup_robots: bool = True,
     setup_base: bool = False,
     torque_base: bool = False,
@@ -288,6 +289,7 @@ def make_real_env(
             node = create_interbotix_global_node('aloha')
     env = RealEnv(
         node=node,
+        active_arms=active_arms,
         setup_robots=setup_robots,
         setup_base=setup_base,
         is_mobile=IS_MOBILE,
@@ -296,7 +298,7 @@ def make_real_env(
     return env
 
 
-def test_real_teleop():
+def test_real_teleop(active_arms="both"):
     """
     Test bimanual teleoperation and show image observations onscreen.
 
@@ -317,17 +319,21 @@ def test_real_teleop():
         robot_model='wx250s',
         robot_name='leader_left',
         node=node,
-    )
+    ) if active_arms in ["left", "both"] else None
+
     leader_bot_right = InterbotixManipulatorXS(
         robot_model='wx250s',
         robot_name='leader_right',
         node=node,
-    )
-    setup_leader_bot(leader_bot_left)
-    setup_leader_bot(leader_bot_right)
+    ) if active_arms in ["right", "both"] else None
+
+    if leader_bot_left:
+        setup_leader_bot(leader_bot_left)
+    if leader_bot_right:
+        setup_leader_bot(leader_bot_right)
 
     # environment setup
-    env = make_real_env(node=node)
+    env = make_real_env(node=node, active_arms=active_arms)
     ts = env.reset(fake=True)
     episode = [ts]
     # visualization setup
@@ -337,7 +343,7 @@ def test_real_teleop():
         plt.ion()
 
     for _ in range(1000):
-        action = get_action(leader_bot_left, leader_bot_right)
+        action = get_action(leader_bot_left, leader_bot_right, active_arms)
         ts = env.step(action)
         episode.append(ts)
 
@@ -349,4 +355,4 @@ def test_real_teleop():
 
 
 if __name__ == '__main__':
-    test_real_teleop()
+    test_real_teleop(active_arms="both")  # change "both" to "left" or "right" to test individual arms

@@ -10,7 +10,7 @@ IS_MOBILE = os.environ.get('INTERBOTIX_ALOHA_IS_MOBILE', 'true').lower() == 'tru
 COLOR_IMAGE_TOPIC_NAME = '{}/camera/color/image_rect_raw'  # for RealSense cameras
 
 # DATA_DIR = os.path.expanduser('~/aloha_data')
-DATA_DIR = "~/interbotix_ws/src/aloha-ros2/scripts/data"
+DATA_DIR = "/home/rl2-bonjour/interbotix_ws/src/aloha-ros2/scripts/data"
 
 ### ALOHA Fixed Constants
 DT = 0.02
@@ -29,7 +29,7 @@ START_ARM_POSE = [
     0.0, -0.96, 1.16, 0.0, -0.3, 0.0, 0.02239, -0.02239,
 ]
 
-LEADER_GRIPPER_CLOSE_THRESH = 0.0
+LEADER_GRIPPER_CLOSE_THRESH = -0.3
 
 # Left finger position limits (qpos[7]), right_finger = -1 * left_finger
 LEADER_GRIPPER_POSITION_OPEN = 0.0323
@@ -39,11 +39,12 @@ FOLLOWER_GRIPPER_POSITION_OPEN = 0.0579
 FOLLOWER_GRIPPER_POSITION_CLOSE = 0.0440
 
 # Gripper joint limits (qpos[6])
-LEADER_GRIPPER_JOINT_OPEN = 0.8298
-LEADER_GRIPPER_JOINT_CLOSE = -0.0552
+LEADER_GRIPPER_JOINT_OPEN = 0.03
+# LEADER_GRIPPER_JOINT_CLOSE = -0.0552
+LEADER_GRIPPER_JOINT_CLOSE = -0.4
 
-FOLLOWER_GRIPPER_JOINT_OPEN = 2.6
-FOLLOWER_GRIPPER_JOINT_CLOSE = 0.6197
+FOLLOWER_GRIPPER_JOINT_OPEN = 1.5
+FOLLOWER_GRIPPER_JOINT_CLOSE = 0.5 #0.3
 
 ### Helper functions
 
@@ -112,9 +113,29 @@ TASK_CONFIGS = {
         'episode_len': 800,
         'camera_names': ['cam_high', 'cam_left_wrist', 'cam_right_wrist']
     },
-    'OBOO_RWA':{
-        'dataset_dir': DATA_DIR + '/OBOO_RWA',
-        'episode_len': 700,
+    'OBOO_ROBOTWA_BIMAN':{
+        'dataset_dir': DATA_DIR + '/OBOO_ROBOTWA_BIMAN',
+        'episode_len': 1000,
         'camera_names': ['cam_high', 'cam_left_wrist', 'cam_right_wrist']
+    },
+    'OBOO_ROBOTWA_LEFT':{
+        'dataset_dir': DATA_DIR + '/OBOO_ROBOTWA_LEFT',
+        'episode_len': 1000,
+        'camera_names': ['cam_high', 'cam_left_wrist']
+    },
+    'OBOO_ROBOTWA':{
+        'dataset_dir': DATA_DIR + '/OBOO_ROBOTWA',
+        'episode_len': 3000,
+        'camera_names': ['cam_high', 'cam_right_wrist']
+    },
+    'DEBUG':{
+        'dataset_dir': DATA_DIR + '/DEBUG',
+        'episode_len': 700,
+        'camera_names': ['cam_high']
+    },
+    'CALIBRATE':{
+        'dataset_dir': DATA_DIR + '/CALIBRATE',
+        'episode_len': 2000,
+        'camera_names': ['cam_high']
     },
 }

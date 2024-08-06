@@ -1,22 +1,23 @@
+#!/bin/bash
 ROS_DISTRO=humble
 
 VENV_ACTIVATE_PATH=$HOME/act/bin/activate
 ROS_SETUP_PATH=/opt/ros/$ROS_DISTRO/setup.bash
 WORKSPACE_SETUP_PATH=$HOME/interbotix_ws/install/setup.bash
-RECORD_EPISODES="$HOME/interbotix_ws/src/aloha/scripts/record_episodes.py"
+RECORD_EPISODES="$HOME/interbotix_ws/src/aloha-ros2/scripts/record_episodes.py"
 
-source $VENV_ACTIVATE_PATH || exit 1
+# source $VENV_ACTIVATE_PATH || exit 1
 source $ROS_SETUP_PATH || exit 1
 source $WORKSPACE_SETUP_PATH || exit 1
 
 print_usage() {
   echo "USAGE:"
-  echo "auto_record.sh task num_episodes"
+  echo "auto_record.sh task num_episodes arm"
 }
 
 nargs="$#"
 
-if [ $nargs -lt 2 ]; then
+if [ $nargs -lt 3 ]; then
   echo "Passed incorrect number of arguments"
   print_usage
   exit 1
@@ -31,7 +32,7 @@ echo "Task: $1"
 for (( i=0; i<$2; i++ ))
 do
   echo "Starting episode $i"
-  python3 "$RECORD_EPISODES" --task "$1"
+  python3 "$RECORD_EPISODES" --task "$1" --arm "$3"
   if [ $? -ne 0 ]; then
     echo "Failed to execute command. Returning"
     exit 1

@@ -51,62 +51,89 @@ def opening_ceremony(
     leader_bot_right: InterbotixManipulatorXS,
     follower_bot_left: InterbotixManipulatorXS,
     follower_bot_right: InterbotixManipulatorXS,
+    active_arms: str
 ):
-    """Move all 4 robots to a pose where it is easy to start demonstration."""
-    # reboot gripper motors, and set operating modes for all motors
-    follower_bot_left.core.robot_reboot_motors('single', 'gripper', True)
-    follower_bot_left.core.robot_set_operating_modes('group', 'arm', 'position')
-    follower_bot_left.core.robot_set_operating_modes('single', 'gripper', 'current_based_position')
-    leader_bot_left.core.robot_set_operating_modes('group', 'arm', 'position')
-    leader_bot_left.core.robot_set_operating_modes('single', 'gripper', 'position')
-    follower_bot_left.core.robot_set_motor_registers('single', 'gripper', 'current_limit', 300)
+    """Move the robots to a pose where it is easy to start the demonstration, based on active arms."""
+    if active_arms in ["both", "left"]:
+        # Set operating modes and reboot gripper motors for left arms
+        follower_bot_left.core.robot_reboot_motors('single', 'gripper', True)
+        follower_bot_left.core.robot_set_operating_modes('group', 'arm', 'position')
+        follower_bot_left.core.robot_set_operating_modes('single', 'gripper', 'current_based_position')
+        leader_bot_left.core.robot_set_operating_modes('group', 'arm', 'position')
+        leader_bot_left.core.robot_set_operating_modes('single', 'gripper', 'position')
+        follower_bot_left.core.robot_set_motor_registers('single', 'gripper', 'current_limit', 300)
+        torque_on(follower_bot_left)
+        torque_on(leader_bot_left)
+    
+    if active_arms in ["both", "right"]:
+        # Set operating modes and reboot gripper motors for right arms
+        follower_bot_right.core.robot_reboot_motors('single', 'gripper', True)
+        follower_bot_right.core.robot_set_operating_modes('group', 'arm', 'position')
+        follower_bot_right.core.robot_set_operating_modes('single', 'gripper', 'current_based_position')
+        leader_bot_right.core.robot_set_operating_modes('group', 'arm', 'position')
+        leader_bot_right.core.robot_set_operating_modes('single', 'gripper', 'position')
+        follower_bot_right.core.robot_set_motor_registers('single', 'gripper', 'current_limit', 300)
+        torque_on(follower_bot_right)
+        torque_on(leader_bot_right)
 
-    follower_bot_right.core.robot_reboot_motors('single', 'gripper', True)
-    follower_bot_right.core.robot_set_operating_modes('group', 'arm', 'position')
-    follower_bot_right.core.robot_set_operating_modes(
-        'single', 'gripper', 'current_based_position'
-    )
-    leader_bot_right.core.robot_set_operating_modes('group', 'arm', 'position')
-    leader_bot_right.core.robot_set_operating_modes('single', 'gripper', 'position')
-    follower_bot_left.core.robot_set_motor_registers('single', 'gripper', 'current_limit', 300)
-
-    torque_on(follower_bot_left)
-    torque_on(leader_bot_left)
-    torque_on(follower_bot_right)
-    torque_on(leader_bot_right)
-
-    # move arms to starting position
+    # Move arms to starting position based on active arms
     start_arm_qpos = START_ARM_POSE[:6]
-    move_arms(
-        [leader_bot_left, follower_bot_left, leader_bot_right, follower_bot_right],
-        [start_arm_qpos] * 4,
-        moving_time=1.5,
-    )
-    # move grippers to starting position
-    move_grippers(
-        [leader_bot_left, follower_bot_left, leader_bot_right, follower_bot_right],
-        [LEADER_GRIPPER_JOINT_MID, FOLLOWER_GRIPPER_JOINT_CLOSE] * 2,
-        moving_time=0.5,
-    )
+    if active_arms == "both":
+        move_arms(
+            [leader_bot_left, follower_bot_left, leader_bot_right, follower_bot_right],
+            [start_arm_qpos] * 4,
+            moving_time=1.5,
+        )
+        move_grippers(
+            [leader_bot_left, follower_bot_left, leader_bot_right, follower_bot_right],
+            [LEADER_GRIPPER_JOINT_MID, FOLLOWER_GRIPPER_JOINT_CLOSE] * 2,
+            moving_time=0.5,
+        )
+    elif active_arms == "left":
+        move_arms(
+            [leader_bot_left, follower_bot_left],
+            [start_arm_qpos] * 2,
+            moving_time=1.5,
+        )
+        move_grippers(
+            [leader_bot_left, follower_bot_left],
+            [LEADER_GRIPPER_JOINT_MID, FOLLOWER_GRIPPER_JOINT_CLOSE],
+            moving_time=0.5,
+        )
+    elif active_arms == "right":
+        move_arms(
+            [leader_bot_right, follower_bot_right],
+            [start_arm_qpos] * 2,
+            moving_time=1.5,
+        )
+        move_grippers(
+            [leader_bot_right, follower_bot_right],
+            [LEADER_GRIPPER_JOINT_MID, FOLLOWER_GRIPPER_JOINT_CLOSE],
+            moving_time=0.5,
+        )
 
-    # press gripper to start data collection
-    # disable torque for only gripper joint of leader robot to allow user movement
-    leader_bot_left.core.robot_torque_enable('single', 'gripper', False)
-    leader_bot_right.core.robot_torque_enable('single', 'gripper', False)
+    # Press gripper to start data collection
+    if active_arms in ["both", "left"]:
+        leader_bot_left.core.robot_torque_enable('single', 'gripper', False)
+    if active_arms in ["both", "right"]:
+        leader_bot_right.core.robot_torque_enable('single', 'gripper', False)
+    
     print('Close the gripper to start')
     pressed = False
     while rclpy.ok() and not pressed:
-        gripper_pos_left = get_arm_gripper_positions(leader_bot_left)
-        gripper_pos_right = get_arm_gripper_positions(leader_bot_right)
+        gripper_pos_left = get_arm_gripper_positions(leader_bot_left) if active_arms in ["both", "left"] else None
+        gripper_pos_right = get_arm_gripper_positions(leader_bot_right) if active_arms in ["both", "right"] else None
         pressed = (
-            (gripper_pos_left < LEADER_GRIPPER_CLOSE_THRESH) and
-            (gripper_pos_right < LEADER_GRIPPER_CLOSE_THRESH)
+            (gripper_pos_left is None or gripper_pos_left < LEADER_GRIPPER_CLOSE_THRESH) and
+            (gripper_pos_right is None or gripper_pos_right < LEADER_GRIPPER_CLOSE_THRESH)
         )
         time.sleep(DT/10)
-    torque_off(leader_bot_left)
-    torque_off(leader_bot_right)
+    
+    if active_arms in ["both", "left"]:
+        torque_off(leader_bot_left)
+    if active_arms in ["both", "right"]:
+        torque_off(leader_bot_right)
     print('Started!')
-
 
 def capture_one_episode(
     dt,
@@ -115,28 +142,30 @@ def capture_one_episode(
     dataset_dir,
     dataset_name,
     overwrite,
+    active_arms,
     torque_base: bool = False,
 ):
     print(f'Dataset name: {dataset_name}')
 
     node = create_interbotix_global_node('aloha')
 
-    # source of data
+    # Source of data
     leader_bot_left = InterbotixManipulatorXS(
         robot_model='wx250s',
         robot_name='leader_left',
         node=node,
         iterative_update_fk=False,
-    )
+    ) if active_arms in ["both", "left"] else None
     leader_bot_right = InterbotixManipulatorXS(
         robot_model='wx250s',
         robot_name='leader_right',
         node=node,
         iterative_update_fk=False,
-    )
+    ) if active_arms in ["both", "right"] else None
 
     env = make_real_env(
         node=node,
+        active_arms=active_arms,
         setup_robots=False,
         setup_base=IS_MOBILE,
         torque_base=torque_base,
@@ -144,21 +173,21 @@ def capture_one_episode(
 
     robot_startup(node)
 
-    # saving dataset
+    # Saving dataset
     if not os.path.isdir(dataset_dir):
         os.makedirs(dataset_dir)
     dataset_path = os.path.join(dataset_dir, dataset_name)
     if os.path.isfile(dataset_path) and not overwrite:
-        print(f'Dataset already exist at \n{dataset_path}\nHint: set overwrite to True.')
+        print(f'Dataset already exists at \n{dataset_path}\nHint: set overwrite to True.')
         exit()
 
-    # move all 4 robots to a starting pose where it is easy to start teleoperation, then wait till
-    # both gripper closed
+    # Move robots to starting pose and wait for gripper closure
     opening_ceremony(
         leader_bot_left,
         leader_bot_right,
         env.follower_bot_left,
-        env.follower_bot_right
+        env.follower_bot_right,
+        active_arms
     )
 
     # Data collection
@@ -170,7 +199,7 @@ def capture_one_episode(
     DT = 1 / FPS
     for t in tqdm(range(max_timesteps)):
         t0 = time.time()
-        action = get_action(leader_bot_left, leader_bot_right)
+        action = get_action(leader_bot_left, leader_bot_right, active_arms)
         t1 = time.time()
         ts = env.step(action)
         t2 = time.time()
@@ -180,18 +209,24 @@ def capture_one_episode(
         time.sleep(max(0, DT - (time.time() - t0)))
     print(f'Avg fps: {max_timesteps / (time.time() - time0)}')
 
-    # Torque on both leader bots
-    torque_on(leader_bot_left)
-    torque_on(leader_bot_right)
-
-    # Open follower grippers
-    env.follower_bot_left.core.robot_set_operating_modes('single', 'gripper', 'position')
-    env.follower_bot_right.core.robot_set_operating_modes('single', 'gripper', 'position')
-    move_grippers(
-        [env.follower_bot_left, env.follower_bot_right],
-        [FOLLOWER_GRIPPER_JOINT_OPEN] * 2,
-        moving_time=0.5
-    )
+    # Torque on both leader bots if applicable
+    if active_arms in ["both", "left"]:
+        torque_on(leader_bot_left)
+        # Open follower grippers
+        env.follower_bot_left.core.robot_set_operating_modes('single', 'gripper', 'position')
+        move_grippers(
+            [env.follower_bot_left],
+            [FOLLOWER_GRIPPER_JOINT_CLOSE],
+            moving_time=0.5
+        )
+    if active_arms in ["both", "right"]:
+        torque_on(leader_bot_right)
+        env.follower_bot_right.core.robot_set_operating_modes('single', 'gripper', 'position')
+        move_grippers(
+            [env.follower_bot_right],
+            [FOLLOWER_GRIPPER_JOINT_CLOSE],
+            moving_time=0.5
+        )
 
     freq_mean = print_dt_diagnosis(actual_dt_history)
     if freq_mean < 30:
@@ -258,7 +293,7 @@ def capture_one_episode(
             data_dict[f'/observations/images/{cam_name}'] = compressed_list
         print(f'compression: {time.time() - t0:.2f}s')
 
-        # pad so it has same length
+        # Pad so it has same length
         t0 = time.time()
         compressed_len = np.array(compressed_len)
         padded_size = compressed_len.max()
@@ -273,7 +308,7 @@ def capture_one_episode(
             data_dict[f'/observations/images/{cam_name}'] = padded_compressed_image_list
         print(f'padding: {time.time() - t0:.2f}s')
 
-    # HDF5
+    # Save to HDF5
     t0 = time.time()
     with h5py.File(dataset_path + '.hdf5', 'w', rdcc_nbytes=1024**2*2) as root:
         root.attrs['sim'] = False
@@ -331,6 +366,7 @@ def main(args: dict):
             dataset_dir,
             dataset_name,
             overwrite,
+            args["arm"],
             torque_base,
         )
         if is_healthy:
@@ -399,6 +435,12 @@ if __name__ == '__main__':
             'If set, mobile base will be torqued on during episode recording, allowing the use of'
             ' a joystick controller or some other manual method.'
         ),
+    )
+    parser.add_argument(
+        '--arm',
+        type=str,
+        default='both',
+        help='Specify which arms to activate: both, left, or right.'
     )
     main(vars(parser.parse_args()))
     # debug()

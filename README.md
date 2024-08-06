@@ -55,3 +55,4 @@ To run the scripts in aloha, use the eplay conda env found in [Egoplay Repo](htt
 
 Useful commands
 - ros2 run rqt_reconfigure rqt_reconfigure
+- to build then run: colcon build, setup_aloha, ros_aloha

@@ -138,7 +138,7 @@ class ImagePublisher(Node):
         # self.cap.release()
 
         if self.observer.rgb_image is not None and rclpy.ok():
-            rgb_image = cv2.cvtColor(self.observer.rgb_image, cv2.COLOR_BGR2RGB)
+            rgb_image = self.observer.rgb_image
             # cv2.imshow(rgb_window, np.rot90(rgb_image, -1))
             rgb_image = undistort(rgb_image, self.rgb_calib)
             self.pub.publish(self.bridge.cv2_to_imgmsg(rgb_image, "rgb8"))
