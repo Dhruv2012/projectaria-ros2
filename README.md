@@ -6,7 +6,8 @@ This repo interfaces with the hardware components of EgoMimic, including the Vip
 To train imitation learning policies for this hardware see EgoMimic Github
 
 ## Structure
-- [``aloha``](./aloha/): Python package providing useful classes and constants for teleoperation and dataset collection.
+- [``aloha``](./aloha/): Python package providing useful classes and constants for teleoperation and dataset collection.  Contains scripts to use Aria glasses with ROS node (`stream_aria_ros.py`)
+- [``egomimic``](./egomimic/): Contains CAD designs for all EgoMimic hardware, including Aria glasses mounts, Arm mounts, and gripper.
 - [``config``](./config/): a config for each robot, designating the port they should bind to, more details in quick start guide.
 - [``launch``](./launch): a ROS 2 launch file for all cameras and manipulators.
 - [``scripts``](./scripts/): Python scripts for teleop and data collection
