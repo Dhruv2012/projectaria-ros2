@@ -198,16 +198,16 @@ class RealEnv:
     def _reset_joints(self):
         reset_position = START_ARM_POSE[:6]
         if self.active_arms in ["left", "both"]:
-            move_arms([self.follower_bot_left], [reset_position], moving_time=1.0)
+            move_arms([self.follower_bot_left], [reset_position], moving_time=2.0)
         if self.active_arms in ["right", "both"]:
-            move_arms([self.follower_bot_right], [reset_position], moving_time=1.0)
+            move_arms([self.follower_bot_right], [reset_position], moving_time=2.0)
 
     def _reset_gripper(self):
         if self.active_arms in ["left", "both"]:
-            move_grippers([self.follower_bot_left], [FOLLOWER_GRIPPER_JOINT_OPEN], moving_time=0.5)
+            move_grippers([self.follower_bot_left], [FOLLOWER_GRIPPER_JOINT_OPEN], moving_time=1.0)
             move_grippers([self.follower_bot_left], [FOLLOWER_GRIPPER_JOINT_CLOSE], moving_time=1.0)
         if self.active_arms in ["right", "both"]:
-            move_grippers([self.follower_bot_right], [FOLLOWER_GRIPPER_JOINT_OPEN], moving_time=0.5)
+            move_grippers([self.follower_bot_right], [FOLLOWER_GRIPPER_JOINT_OPEN], moving_time=1.0)
             move_grippers([self.follower_bot_right], [FOLLOWER_GRIPPER_JOINT_CLOSE], moving_time=1.0)
 
     def get_observation(self, get_base_vel=False):

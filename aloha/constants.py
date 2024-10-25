@@ -11,6 +11,7 @@ COLOR_IMAGE_TOPIC_NAME = '{}/camera/color/image_rect_raw'  # for RealSense camer
 
 # DATA_DIR = os.path.expanduser('~/aloha_data')
 DATA_DIR = "/home/rl2-bonjour/interbotix_ws/src/aloha-ros2/scripts/data"
+# DATA_DIR = "/media/rl2-bonjour/data/EgoplayData"
 
 ### ALOHA Fixed Constants
 DT = 0.02
@@ -128,6 +129,21 @@ TASK_CONFIGS = {
         'episode_len': 3000,
         'camera_names': ['cam_high', 'cam_right_wrist']
     },
+    'OBOO_ROBOTWA_RIGHTTABLE':{
+        'dataset_dir': DATA_DIR + '/OBOO_ROBOTWA_RIGHTTABLE',
+        'episode_len': 3000,
+        'camera_names': ['cam_high', 'cam_right_wrist']
+    },
+    'ROBOTWA_CLOTHFOLD':{
+        'dataset_dir': DATA_DIR + '/ROBOTWA_CLOTHFOLD',
+        'episode_len': 5000,
+        'camera_names': ['cam_high', 'cam_right_wrist', 'cam_left_wrist']
+    },
+    'ROBOTWA_GROCERIES':{
+        'dataset_dir': DATA_DIR + '/ROBOTWA_GROCERIES',
+        'episode_len': 6000,
+        'camera_names': ['cam_high', 'cam_right_wrist', 'cam_left_wrist']
+    },
     'DEBUG':{
         'dataset_dir': DATA_DIR + '/DEBUG',
         'episode_len': 700,
@@ -137,5 +153,63 @@ TASK_CONFIGS = {
         'dataset_dir': DATA_DIR + '/CALIBRATE',
         'episode_len': 2000,
         'camera_names': ['cam_high']
+    },
+    'DEBUG_ROBOTWA_BLACK_TABLE': {
+        'dataset_dir': DATA_DIR + '/DEBUG_ROBOTWA_BLACK_TABLE',
+        'episode_len': 6000,
+        'camera_names': ['cam_high', 'cam_right_wrist']
+    },
+    'ROBOTWA_SMALLCLOTHFOLD_DARKBLUE':{
+        'dataset_dir': DATA_DIR + '/ROBOTWA_SMALLCLOTHFOLD_DARKBLUE',
+        'episode_len': 5000,
+        'camera_names': ['cam_high', 'cam_right_wrist', 'cam_left_wrist']
+    },
+    'ROBOTWA_SMALLCLOTHFOLD_WHITE':{
+        'dataset_dir': DATA_DIR + '/ROBOTWA_SMALLCLOTHFOLD_WHITE',
+        'episode_len': 5000,
+        'camera_names': ['cam_high', 'cam_right_wrist', 'cam_left_wrist']
+    },
+    'ROBOTWA_SMALLCLOTHFOLD_GREY':{
+        'dataset_dir': DATA_DIR + '/ROBOTWA_SMALLCLOTHFOLD_GREY',
+        'episode_len': 5000,
+        'camera_names': ['cam_high', 'cam_right_wrist', 'cam_left_wrist']
+    },
+    'ROBOTWA_SMALLCLOTHFOLD_RED':{
+        'dataset_dir': DATA_DIR + '/ROBOTWA_SMALLCLOTHFOLD_RED',
+        # 'dataset_dir': '/media/rl2-bonjour/data/EgoplayData' + '/ROBOTWA_SMALLCLOTHFOLD_RED',
+        'episode_len': 5000,
+        'camera_names': ['cam_high', 'cam_right_wrist', 'cam_left_wrist']
+    },
+    'ROBOTWA_SMALLCLOTHFOLD_WHITE_LONGSLEEVE':{
+        'dataset_dir': DATA_DIR + '/ROBOTWA_SMALLCLOTHFOLD_WHITE_LONGSLEEVE',
+        # 'dataset_dir': '/media/rl2-bonjour/data/EgoplayData' + '/ROBOTWA_SMALLCLOTHFOLD_RED',
+        'episode_len': 5000,
+        'camera_names': ['cam_high', 'cam_right_wrist', 'cam_left_wrist']
+    },
+    'ROBOTWA_SMALLCLOTHFOLD_DARKBLUE_LONGSLEEVE':{
+        'dataset_dir': DATA_DIR + '/ROBOTWA_SMALLCLOTHFOLD_DARKBLUE_LONGSLEEVE',
+        # 'dataset_dir': '/media/rl2-bonjour/data/EgoplayData' + '/ROBOTWA_SMALLCLOTHFOLD_RED',
+        'episode_len': 5000,
+        'camera_names': ['cam_high', 'cam_right_wrist', 'cam_left_wrist']
+    },
+    'ROBOTWA_SORTING':{
+        'dataset_dir': DATA_DIR + '/ROBOTWA_SORTING',
+        'episode_len': 1500,
+        'camera_names': ['cam_high', 'cam_right_wrist']
+    },
+    'OBOO_ROBOTWA_EXTRA_HOUR':{
+        'dataset_dir': DATA_DIR + '/OBOO_ROBOTWA_EXTRA_HOUR',
+        'episode_len': 3000,
+        'camera_names': ['cam_high', 'cam_right_wrist']
+    },
+    'OBOO_ROBOTWA_LANG':{
+        'dataset_dir': DATA_DIR + '/OBOO_ROBOTWA_LANG',
+        'episode_len': 400,
+        'camera_names': ['cam_high', 'cam_right_wrist']
+    },
+    'ROBOTWA_COFFEE':{
+        'dataset_dir': DATA_DIR + '/ROBOTWA_COFFEE',
+        'episode_len': 5000,
+        'camera_names': ['cam_high', 'cam_right_wrist', 'cam_left_wrist']
     },
 }

@@ -48,6 +48,7 @@ class ImagePublisher(Node):
 
         # Ryan's aria streaming
         # Create DeviceClient instance
+        aria.Level = 4
         device_client = aria.DeviceClient()
         client_config = aria.DeviceClientConfig()
         device_client.set_client_config(client_config)
@@ -62,6 +63,7 @@ class ImagePublisher(Node):
         # Set config
         streaming_config = aria.StreamingConfig()
         streaming_config.profile_name = "profile15"
+        print(streaming_config.profile_name)
         streaming_config.streaming_interface = aria.StreamingInterface.Usb
 
         # get security certs

@@ -17,7 +17,7 @@ print_usage() {
 
 nargs="$#"
 
-if [ $nargs -lt 3 ]; then
+if [ $nargs -lt 4 ]; then
   echo "Passed incorrect number of arguments"
   print_usage
   exit 1
@@ -31,8 +31,9 @@ fi
 echo "Task: $1"
 for (( i=0; i<$2; i++ ))
 do
+  episode_idx=$(( $4 + $i ))
   echo "Starting episode $i"
-  python3 "$RECORD_EPISODES" --task "$1" --arm "$3"
+  python3 "$RECORD_EPISODES" --task "$1" --arm "$3" --episode_idx "$episode_idx"
   if [ $? -ne 0 ]; then
     echo "Failed to execute command. Returning"
     exit 1

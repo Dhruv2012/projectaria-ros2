@@ -78,3 +78,20 @@ First, define a task in `aloha/constants.py`.  After adding this you'll need to 
 ```
 python scripts/dual_side_teleop.py --arm <left, right, both> --task_name <task name>
 ```
+
+
+## Other Stuff
+setting in aloha_vx300s.yaml, figure out how to make this change in the other yaml so I don't have to edit the interbotix repo
+
+```
+  shoulder_shadow:
+    ID: 3
+    Baud_Rate: 3
+    Return_Delay_Time: 0
+    Drive_Mode: 2
+    Velocity_Limit: 131
+    Min_Position_Limit: 841
+    Max_Position_Limit: 2867
+    Secondary_ID: 255
+
+```
