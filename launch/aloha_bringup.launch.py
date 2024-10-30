@@ -235,7 +235,7 @@ def launch_setup(context, *args, **kwargs):
                     {'initial_reset': True},
                     ParameterFile(
                         param_file=PathJoinSubstitution([
-                            FindPackageShare('aloha'),
+                            FindPackageShare('eve'),
                             'config',
                             'rs_cam.yaml',
                         ]),
@@ -252,7 +252,7 @@ def launch_setup(context, *args, **kwargs):
     )
     
     stream_aria_ros_node = Node(
-        package='aloha',
+        package='eve',
         executable='stream_aria_ros',
         name='cam_aria',
         output='screen'
@@ -275,7 +275,7 @@ def launch_setup(context, *args, **kwargs):
         parameters=[
             ParameterFile(
                 PathJoinSubstitution([
-                    FindPackageShare('aloha'),
+                    FindPackageShare('eve'),
                     'config',
                     'base_joystick_teleop.yaml'
                 ]),
@@ -381,7 +381,7 @@ def generate_launch_description():
         DeclareLaunchArgument(
             'leader_modes_left',
             default_value=PathJoinSubstitution([
-                FindPackageShare('aloha'),
+                FindPackageShare('eve'),
                 'config',
                 'leader_modes_left.yaml',
             ]),
@@ -392,7 +392,7 @@ def generate_launch_description():
         DeclareLaunchArgument(
             'leader_modes_right',
             default_value=PathJoinSubstitution([
-                FindPackageShare('aloha'),
+                FindPackageShare('eve'),
                 'config',
                 'leader_modes_right.yaml',
             ]),
@@ -403,7 +403,7 @@ def generate_launch_description():
         DeclareLaunchArgument(
             'follower_modes_left',
             default_value=PathJoinSubstitution([
-                FindPackageShare('aloha'),
+                FindPackageShare('eve'),
                 'config',
                 'follower_modes_left.yaml',
             ]),
@@ -414,7 +414,7 @@ def generate_launch_description():
         DeclareLaunchArgument(
             'follower_modes_right',
             default_value=PathJoinSubstitution([
-                FindPackageShare('aloha'),
+                FindPackageShare('eve'),
                 'config',
                 'follower_modes_right.yaml',
             ]),
@@ -502,14 +502,14 @@ def generate_launch_description():
         DeclareLaunchArgument(
             'aloha_rvizconfig',
             default_value=PathJoinSubstitution([
-                FindPackageShare('aloha'),
+                FindPackageShare('eve'),
                 'rviz',
                 'aloha.rviz',
             ]),
         )
     )
     declared_arguments.append(Node(
-            package='aloha',
+            package='eve',
             executable='stream_aria_ros',
             name='cam_aria',
             output='screen'

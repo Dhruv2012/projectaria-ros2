@@ -5,7 +5,7 @@ import os
 import time
 
 
-from aloha.constants import (
+from eve.constants import (
     DT,
     FOLLOWER_GRIPPER_JOINT_CLOSE,
     FOLLOWER_GRIPPER_JOINT_OPEN,
@@ -16,11 +16,11 @@ from aloha.constants import (
     START_ARM_POSE,
     TASK_CONFIGS,
 )
-from aloha.real_env import (
+from eve.real_env import (
     get_action,
     make_real_env
 )
-from aloha.robot_utils import (
+from eve.robot_utils import (
     get_arm_gripper_positions,
     ImageRecorder,
     move_arms,
@@ -147,7 +147,7 @@ def capture_one_episode(
 ):
     print(f'Dataset name: {dataset_name}')
 
-    node = create_interbotix_global_node('aloha')
+    node = create_interbotix_global_node('eve')
 
     # Source of data
     leader_bot_left = InterbotixManipulatorXS(

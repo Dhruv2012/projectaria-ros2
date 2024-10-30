@@ -52,7 +52,8 @@ class ImagePublisher(Node):
         device_client = aria.DeviceClient()
         client_config = aria.DeviceClientConfig()
         device_client.set_client_config(client_config)
-
+        
+        print("BEGINNING STREAM")
         # Connect to device
         device = device_client.connect()
 

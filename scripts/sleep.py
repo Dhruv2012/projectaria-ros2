@@ -2,7 +2,7 @@
 
 import argparse
 
-from aloha.robot_utils import (
+from eve.robot_utils import (
     sleep_arms,
     torque_on,
 )
@@ -27,7 +27,7 @@ def main():
     )
     args = argparser.parse_args()
 
-    node = create_interbotix_global_node('aloha')
+    node = create_interbotix_global_node('eve')
 
     follower_bot_left = InterbotixManipulatorXS(
         robot_model='vx300s',

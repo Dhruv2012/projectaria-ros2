@@ -2,7 +2,7 @@ from collections import deque
 import time
 from typing import Sequence
 
-from aloha.constants import (
+from eve.constants import (
     COLOR_IMAGE_TOPIC_NAME,
     DT,
     IS_MOBILE,

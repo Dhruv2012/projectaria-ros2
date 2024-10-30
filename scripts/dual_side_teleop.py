@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from aloha.constants import (
+from eve.constants import (
     DT_DURATION,
     FOLLOWER_GRIPPER_JOINT_CLOSE,
     LEADER2FOLLOWER_JOINT_FN,
@@ -8,7 +8,7 @@ from aloha.constants import (
     LEADER_GRIPPER_JOINT_MID,
     START_ARM_POSE,
 )
-from aloha.robot_utils import (
+from eve.robot_utils import (
     get_arm_gripper_positions,
     move_arms,
     move_grippers,
@@ -126,7 +126,7 @@ def press_to_start(
 
 
 def main(args) -> None:
-    node = create_interbotix_global_node('aloha')
+    node = create_interbotix_global_node('eve')
     follower_bot_right = None
     leader_bot_right = None
     follower_bot_left = None

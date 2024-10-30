@@ -1,7 +1,7 @@
 import argparse
 import os
 
-from aloha.constants import DT
+from eve.constants import DT
 import cv2
 import h5py
 import IPython
@@ -10,7 +10,7 @@ import numpy as np
 
 e = IPython.embed
 
-from aloha.constants import JOINT_NAMES
+from eve.constants import JOINT_NAMES
 STATE_NAMES = JOINT_NAMES + ['gripper']
 BASE_STATE_NAMES = ['linear_vel', 'angular_vel']
 

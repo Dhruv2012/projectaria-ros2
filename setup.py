@@ -6,7 +6,7 @@ from setuptools import (
     setup,
 )
 
-package_name = 'aloha'
+package_name = 'eve'
 
 setup(
     name=package_name,
@@ -20,15 +20,15 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    author_email='tonyzhao@stanford.edu',
-    author='Tony Zhao',
-    maintainer='Trossen Robotics',
-    maintainer_email='trsupport@trossenrobotics.com',
-    description='ALOHA: A Low-cost Open-source Hardware System for Bimanual Teleoperation',
+    author_email='skareer@gatech.edu',
+    author='Simar Kareer',
+    maintainer='Simar Kareer',
+    maintainer_email='skareer@gatech.edu',
+    description='EgoMimic: Scaling Imitation Learning through Egocentric Video',
     license='BSD',
     tests_require=['pytest'],
     entry_points={
-        'console_scripts': ['stream_aria_ros = aloha.stream_aria_ros:main'
+        'console_scripts': ['stream_aria_ros = eve.stream_aria_ros:main'
         ],
     },
 )

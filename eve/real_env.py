@@ -1,7 +1,7 @@
 import collections
 import time
 
-from aloha.constants import (
+from eve.constants import (
     DT,
     FOLLOWER_GRIPPER_JOINT_CLOSE,
     FOLLOWER_GRIPPER_JOINT_OPEN,
@@ -12,7 +12,7 @@ from aloha.constants import (
     LEADER_GRIPPER_JOINT_NORMALIZE_FN,
     START_ARM_POSE,
 )
-from aloha.robot_utils import (
+from eve.robot_utils import (
     ImageRecorder,
     move_arms,
     move_grippers,
@@ -128,7 +128,7 @@ class RealEnv:
         :param torque_enable: True to torque the base on setup, defaults to False
         """
         self.base = InterbotixSlate(
-            'aloha',
+            'eve',
             node=node,
         )
         self.base.base.set_motor_torque(torque_enable)
@@ -286,7 +286,7 @@ def make_real_env(
     if node is None:
         node = get_interbotix_global_node()
         if node is None:
-            node = create_interbotix_global_node('aloha')
+            node = create_interbotix_global_node('eve')
     env = RealEnv(
         node=node,
         active_arms=active_arms,

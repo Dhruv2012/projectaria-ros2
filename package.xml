@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>aloha</name>
+  <name>eve</name>
   <version>0.0.0</version>
-  <description>ALOHA: A Low-cost Open-source Hardware System for Bimanual Teleoperation</description>
-  <maintainer email="trsupport@trossenrobotics.com">Trossen Robotics</maintainer>
+  <description>Eve</description>
+  <maintainer email="skareer@gatech.edu">Simar Kareer</maintainer>
   <license>BSD</license>
-  <author email="tonyzhao@stanford.edu">Tony Zhao</author>
+  <author email="skareer@gatech.edu">Tony Zhao</author>
 
   <buildtool_depend>ament_python</buildtool_depend>
 

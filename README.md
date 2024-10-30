@@ -6,8 +6,8 @@ This repo interfaces with the hardware components of EgoMimic, including the Vip
 To train imitation learning policies for this hardware see EgoMimic Github
 
 ## Structure
-- [``aloha``](./aloha/): Python package providing useful classes and constants for teleoperation and dataset collection.  Contains scripts to use Aria glasses with ROS node (`stream_aria_ros.py`)
-- [``egomimic``](./egomimic/): Contains CAD designs for all EgoMimic hardware, including Aria glasses mounts, Arm mounts, and gripper.
+- [``eve``](./eve/): Python package providing useful classes and constants for teleoperation and dataset collection.  Contains scripts to use Aria glasses with ROS node (`stream_aria_ros.py`)
+- [``hardware``](./hardware/): Contains CAD designs for all EgoMimic hardware, including Aria glasses mounts, Arm mounts, and gripper.
 - [``config``](./config/): a config for each robot, designating the port they should bind to, more details in quick start guide.
 - [``launch``](./launch): a ROS 2 launch file for all cameras and manipulators.
 - [``scripts``](./scripts/): Python scripts for teleop and data collection
@@ -19,7 +19,7 @@ Build all of this without a conda environment in `~/interbotix_ws`
 
 ```
 IGNORE: git clone https://github.com/Interbotix/aloha.git
-git clone git@github.com:SimarKareer/EgoMimic-Hardware.git
+git clone git@github.com:SimarKareer/eve.git
 ```
 
 2. Setup Aria Glasses [Aria Instructions](https://facebookresearch.github.io/projectaria_tools/docs/ARK/sdk/setup).  In brief you just need to run
@@ -38,8 +38,8 @@ sudo usermod -a <user> -G video
 ```
 5. Add aliases to `~/.bash_aliases`
 ```
-alias setup_aloha="source /opt/ros/humble/setup.bash && source ~/interbotix_ws/install/setup.bash"
-alias ros_aloha="usbreset "Aria" && sleep 3 && ros2 launch aloha aloha_bringup.launch.py"
+alias setup_eve="source /opt/ros/humble/setup.bash && source ~/interbotix_ws/install/setup.bash"
+alias ros_eve="ros2 launch eve aloha_bringup.launch.py"
 ```
 6. Restart machine
 
@@ -54,8 +54,8 @@ alias ros_aloha="usbreset "Aria" && sleep 3 && ros2 launch aloha aloha_bringup.l
 ## Usage
 To start up ROS run
 ```
-setup_aloha
-ros_aloha
+setup_eve
+ros_eve
 ```
 
 To ensure all camera sensors are functional launch Rviz
@@ -74,7 +74,7 @@ python scripts/dual_side_teleop.py --arm <left, right, both>
 ```
 
 ### Data Collection
-First, define a task in `aloha/constants.py`.  After adding this you'll need to rebuild via `colcon build`.  Then run
+First, define a task in `eve/constants.py`.  After adding this you'll need to rebuild via `colcon build`.  Then run
 ```
 python scripts/dual_side_teleop.py --arm <left, right, both> --task_name <task name>
 ```

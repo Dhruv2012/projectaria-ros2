@@ -4,16 +4,16 @@ import argparse
 import os
 import time
 
-from aloha.constants import (
+from eve.constants import (
     FOLLOWER_GRIPPER_JOINT_OPEN,
     FPS,
     IS_MOBILE,
     JOINT_NAMES,
 )
-from aloha.real_env import (
+from eve.real_env import (
     make_real_env,
 )
-from aloha.robot_utils import (
+from eve.robot_utils import (
     move_grippers,
 )
 import h5py
@@ -108,7 +108,7 @@ def main(args):
         # processed_base_actions = smooth_base_action(base_actions)
         processed_base_actions = base_actions
 
-    node = create_interbotix_global_node('aloha')
+    node = create_interbotix_global_node('eve')
 
     env = make_real_env(node, setup_robots=False, setup_base=IS_MOBILE)
 
