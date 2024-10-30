@@ -1,4 +1,4 @@
-# EgoMimic Hardware
+# Eve
 Hardware repo for EgoMimic [Project Page](https://egomimic.github.io/) | [Hardware Doc](https://docs.google.com/document/d/1ac5yN-IIRzRgKeJleBk5XEHwk4tcsTsFBDvItDau1Nk/edit?tab=t.0#heading=h.axwpytr6n3bk)
 
 This repo interfaces with the hardware components of EgoMimic, including the ViperX arms and supports using Aria Glasses as part of ROS.  We fork off of the Aloha ROS2 implementation from [Trossen](https://github.com/Interbotix/aloha.git).
