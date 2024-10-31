@@ -1,9 +1,18 @@
-# Eve
-Hardware repo for EgoMimic [Project Page](https://egomimic.github.io/) | [Hardware Doc](https://docs.google.com/document/d/1ac5yN-IIRzRgKeJleBk5XEHwk4tcsTsFBDvItDau1Nk/edit?tab=t.0#heading=h.axwpytr6n3bk)
+# EgoMimic - Eve
+![eve](./images/eve.jpg)
+Hardware repo for our work EgoMimic: Scaling Imitation Learning Via EgoCentric Videos.  To train imitation learning policies, or to collect human embodiment data via Aria glasses, see the main [EgoMimic repo](https://github.com/SimarKareer/EgoMimic).
 
-This repo interfaces with the hardware components of EgoMimic, including the ViperX arms and supports using Aria Glasses as part of ROS.  We fork off of the Aloha ROS2 implementation from [Trossen](https://github.com/Interbotix/aloha.git).
+[Project Page](https://egomimic.github.io/) | [Hardware Assembly Doc](https://docs.google.com/document/d/1ac5yN-IIRzRgKeJleBk5XEHwk4tcsTsFBDvItDau1Nk/edit?tab=t.0#heading=h.axwpytr6n3bk)
 
-To train imitation learning policies for this hardware see EgoMimic Github
+Eve is the robot that powers EgoMimic.  We built Eve to learn from <u>E</u>gocentric <u>V</u>ideos <u>E</u>ffortlessly.  
+
+This codebase interfaces with all of Eve's hardware components.  It contains the ROS setup to interface with the ViperX arms and supports using Aria Glasses as part of ROS.  It also contains [``scripts``](./scripts/) to collect teleoperated demonstrations on Eve.  We fork off of the Aloha ROS2 implementation from [Trossen](https://github.com/Interbotix/aloha.git).
+
+Tested
+- :white_check_mark: Ubuntu 22.04 + ROS 2 Humble
+
+
+
 
 ## Structure
 - [``eve``](./eve/): Python package providing useful classes and constants for teleoperation and dataset collection.  Contains scripts to use Aria glasses with ROS node (`stream_aria_ros.py`)
