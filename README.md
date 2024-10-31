@@ -1,17 +1,26 @@
-# EgoMimic - Eve
-![eve](./images/eve.jpg)
-Hardware repo for our work EgoMimic: Scaling Imitation Learning Via EgoCentric Videos.  To train imitation learning policies, or to collect human embodiment data via Aria glasses, see the main [EgoMimic repo](https://github.com/SimarKareer/EgoMimic).
+# EgoMimic Hardware Repository
 
-[Project Page](https://egomimic.github.io/) | [Hardware Assembly Doc](https://docs.google.com/document/d/1ac5yN-IIRzRgKeJleBk5XEHwk4tcsTsFBDvItDau1Nk/edit?tab=t.0#heading=h.axwpytr6n3bk)
+This repository contains the hardware setup for **EgoMimic: Scaling Imitation Learning via Egocentric Videos**. To train imitation learning policies, or to collect human embodiment data via Aria glasses, see the main [EgoMimic repo](https://github.com/SimarKareer/EgoMimic).
 
-Eve is the robot that powers EgoMimic.  We built Eve to learn from <u>E</u>gocentric <u>V</u>ideos <u>E</u>ffortlessly.  
+**Useful Links**  
+- [Project Page](https://egomimic.github.io/)
+- [Hardware Assembly Document](https://docs.google.com/document/d/1ac5yN-IIRzRgKeJleBk5XEHwk4tcsTsFBDvItDau1Nk/edit?tab=t.0#heading=h.axwpytr6n3bk)
 
-This codebase interfaces with all of Eve's hardware components.  It contains the ROS setup to interface with the ViperX arms and supports using Aria Glasses as part of ROS.  It also contains [``scripts``](./scripts/) to collect teleoperated demonstrations on Eve.  We fork off of the Aloha ROS2 implementation from [Trossen](https://github.com/Interbotix/aloha.git).
+---
 
-Tested
-- :white_check_mark: Ubuntu 22.04 + ROS 2 Humble
+## Meet Eve
+![Eve](./images/eve.jpg)
 
+**Eve** is the robot behind EgoMimic, built to learn from **E**gocentric **V**ideos **E**ffortlessly.
 
+This codebase interfaces with all of Eve's hardware components, including the ROS setup to control ViperX arms and support Aria Glasses integration in ROS. It also contains scripts for collecting teleoperated demonstrations on Eve.  We build off of the [Aloha ROS2 implementation from Trossen Robotics](https://github.com/Interbotix/aloha.git).
+
+---
+
+### Software Support
+
+- :white_check_mark: **Supported Operating System**: Ubuntu 22.04
+- :white_check_mark: **ROS Version**: ROS 2 Humble
 
 
 ## Structure
