@@ -11,21 +11,10 @@ from projectaria_tools.core.sensor_data import ImageDataRecord
 from projectaria_tools.core import calibration
 import signal
 
+from rclpy.executors import MultiThreadedExecutor
+
 import sys
 
-# def main():
-#     rclpy.init(args=sys.argv)
-#     node = rclpy.create_node("cam_aria")
-#     node.get_logger().info('Created dummy node')
-#     pub1 = node.create_publisher(String, "/node_test_messages_pub", 10)
-
-#     while rclpy.ok():
-#         msg1 = String()
-#         msg1.data = "hi"
-#         pub1.publish(msg1)
-
-# if __name__ == "__main__":
-#     main()
 
 def undistort(raw_image, rgb_calib):
     warped_calib = calibration.get_linear_camera_calibration(
@@ -42,9 +31,6 @@ class ImagePublisher(Node):
         self.bridge = CvBridge()
         # self.cap = cv2.VideoCapture(0)
         self.pub = self.create_publisher(Image, "/cam_high", 10)
-        # self.rgb8pub = self.create_publisher(Image, "/image/rgb", 10)
-        # self.bgr8pub = self.create_publisher(Image, "/image/bgr", 10)
-        # self.mono8pub = self.create_publisher(Image, "/image/mono", 10)
 
         # Ryan's aria streaming
         # Create DeviceClient instance
@@ -75,11 +61,15 @@ class ImagePublisher(Node):
         # if streaming_manager.streaming_state.value != 4:
         #     streaming_manager.stop_streaming()
         
-        # try:
+        if streaming_manager.streaming_state.value != aria.StreamingState.NotStarted and streaming_manager.streaming_state.value != aria.StreamingState.Stopped:
+            print("Stopping an existing streaming session.")
+            try:
+                streaming_manager.stop_streaming()
+            except:
+                print(f"Aria Streaming State: {streaming_manager.streaming_state}")
+
+
         streaming_manager.start_streaming()
-        # except RuntimeError:
-        #     streaming_manager.stop_streaming()
-        #     streaming_manager.start_streaming()
 
 
         # config to RGB camera stream
@@ -118,27 +108,6 @@ class ImagePublisher(Node):
         self.rgb_calib = rgb_calib
 
     def timer_callback(self):
-        # while True:
-        #     try:
-        #         r, frame = self.cap.read()
-        #         if not r:
-        #             return
-        #         self.pub.publish(self.bridge.cv2_to_imgmsg(frame, "bgr8"))
-
-        #         # BGR8
-        #         self.bgr8pub.publish(self.bridge.cv2_to_imgmsg(frame, "bgr8"))
-
-        #         # RGB8
-        #         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        #         self.rgb8pub.publish(self.bridge.cv2_to_imgmsg(frame_rgb, "rgb8"))
-
-        #         # MONO8
-        #         frame_mono = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        #         self.mono8pub.publish(self.bridge.cv2_to_imgmsg(frame_mono, "mono8"))
-
-        #     except CvBridgeError as e:
-        #         print(e)
-        # self.cap.release()
 
         if self.observer.rgb_image is not None and rclpy.ok():
             rgb_image = self.observer.rgb_image
@@ -149,31 +118,45 @@ class ImagePublisher(Node):
             self.observer.rgb_image = None
 
 
-
-
-        # # Close stream from data and stop streaming
+    # # Close stream from data and stop streaming
     def destroy_node(self):
         print("Destroying Aria Node")
         self.streaming_client.unsubscribe()
-        self.streaming_manager.stop_streaming()
+
+        if self.streaming_manager.streaming_state.value == aria.StreamingState.Streaming:
+            print("Closing Aria Stream")
+            self.streaming_manager.stop_streaming()
         self.device_client.disconnect(self.device)
+        print("Aria Disconnected")
         super().destroy_node()
 
 def main(args=None):
-    def signal_handler(sig, frame):
-        # ip.shutdown()
-        ip.destroy_node()
-        # rclpy.shutdown()
-        exit()
-    signal.signal(signal.SIGINT, signal_handler)
-
-
     rclpy.init(args=args)
     ip = ImagePublisher()
     print("Publishing...")
 
-    
+    try:
 
-    rclpy.spin(ip)
+        def signal_handler(sig, frame):
+            if ip is not None:
+                ip.destroy_node()
+            if rclpy.ok():
+                rclpy.shutdown()
+            sys.exit(0)
+
+        signal.signal(signal.SIGINT, signal_handler)
+
+        rclpy.spin(ip)
+
+    except SystemExit:
+        pass
+    except Exception as e:
+        print(f"Exception occurred: {e}")
+    finally:
+        if ip is not None:
+            ip.destroy_node()
+        if rclpy.ok():
+            rclpy.shutdown()
+
 if __name__ == '__main__':
     main()
