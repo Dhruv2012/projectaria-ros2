@@ -33,22 +33,22 @@ This codebase interfaces with all of Eve's hardware components, including the RO
 
 ## Install instructions
 Build all of this without a conda environment in `~/interbotix_ws`
-1. Set up ROS2, interbotix packages, and realsense cameras via the [(Trossen Instructions)](https://docs.trossenrobotics.com/aloha_docs/getting_started/stationary/software_setup.html).  But critically under the step for [Aloha Software Installation](https://docs.trossenrobotics.com/aloha_docs/getting_started/stationary/software_setup.html#aloha-software-installation), make sure to clone this repo instead
+1. Set up ROS2, interbotix packages, and realsense cameras via the [(Trossen Instructions)](https://docs.trossenrobotics.com/aloha_docs/2.0/getting_started/stationary/software_setup.html).  But critically under the step for [Aloha Software Installation](https://docs.trossenrobotics.com/aloha_docs/2.0/getting_started/stationary/software_setup.html#interbotix-x-series-arm-control-software-installation), make sure to clone this repo to '~/interbotix_ws/src'instead
 
 ```
 IGNORE: git clone https://github.com/Interbotix/aloha.git
-git clone git@github.com:SimarKareer/eve.git
+git clone https://github.com/SimarKareer/EgoMimic-Eve.git
 ```
 
 2. Setup Aria Glasses [Aria Instructions](https://facebookresearch.github.io/projectaria_tools/docs/ARK/sdk/setup).  In brief you just need to run
 ```
 python3 -m pip install projectaria_client_sdk --no-cache-dir
 aria-doctor
-aria auth pair (then open mobile app and approve)
+aria auth pair # (then open mobile app and approve)
 ```
 3. Install extra packages
 ```
-pip install opencv-python fastplotlib==0.1.0a13 glfw==2.6.2 pyg==0.1.14 dm_env h5py ipython
+pip install opencv-python fastplotlib==0.1.0a13 glfw==2.6.2 pygfx==0.1.14 dm_env h5py ipython
 ```
 4. Add permissions on video cams
 ```
@@ -65,7 +65,7 @@ alias ros_eve="ros2 launch eve aloha_bringup.launch.py"
 
 ### Tips
 - Use a standard terminal instead of vscode.
-- Any time changes are made to the ROS package, you must run `colcon build` in `~/interbotix_ws`
+- Any time changes are made to the ROS package, you must run `colcon build` in `~/interbotix_ws`. (As of December 24, 2024, there are 39 packages to build at this stage.)
 - ros2 run rqt_reconfigure rqt_reconfigure
 
 
@@ -73,7 +73,7 @@ alias ros_eve="ros2 launch eve aloha_bringup.launch.py"
 To start up ROS run
 ```
 setup_eve
-ros_eve
+ros_eve # (wait 15 seconds for aria to start streaming)
 ```
 
 To ensure all camera sensors are functional launch Rviz
