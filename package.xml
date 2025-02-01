@@ -9,19 +9,12 @@
 
   <buildtool_depend>ament_python</buildtool_depend>
 
-  <!-- <depend>interbotix_common_modules</depend>
-  <depend>interbotix_ros_slate</depend>
-  <depend>interbotix_xs_modules</depend>
-  <depend>interbotix_xs_msgs</depend>
-  <depend>interbotix_xsarm_control</depend>
-  <depend>joy</depend> -->
+  
   <depend>rclpy</depend>
-  <!-- <depend>realsense2_camera</depend> -->
   <depend>rviz2</depend>
   <depend>sensor_msgs</depend>
   <depend>std_msgs</depend>
   <depend>std_srvs</depend>
-  <!-- <depend>teleop_twist_joy</depend> -->
   <depend>tf2_ros</depend>
   <depend>usb_cam</depend>
 
