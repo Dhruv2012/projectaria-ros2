@@ -1,6 +1,6 @@
 # ROS2 for Aria
 
-This repository contains the ROS setup for Aria **EgoMimic: Scaling Imitation Learning via Egocentric Videos**. To train imitation learning policies, or to collect human embodiment data via Aria glasses, see the main [EgoMimic repo](https://github.com/SimarKareer/EgoMimic).
+This repository contains the ROS setup for Project Aria glasses in **EgoMimic: Scaling Imitation Learning via Egocentric Videos**. 
 
 **Useful Links**  
 - [Project Page](https://egomimic.github.io/)
@@ -15,20 +15,14 @@ This repository contains the ROS setup for Aria **EgoMimic: Scaling Imitation Le
 
 
 ## Structure
-- [``eve``](./eve/): Python package providing useful classes and constants for teleoperation and dataset collection.  Contains scripts to use Aria glasses with ROS node (`stream_aria_ros.py`).
+- [``eve``](./eve/): Python package providing useful classes related to Aria and visualization.  Contains scripts to use Aria glasses with ROS node (`stream_aria_ros.py`).
 - [``launch``](./launch): a ROS 2 launch file for streaming aria camera.
 
 
 ## Install instructions
-Build all of this without a conda environment in `~/interbotix_ws`
-1. Set up ROS2 (you dont need interbotix and realsense camera packages for streaming Aria) via the [(Trossen Instructions)](https://docs.trossenrobotics.com/aloha_docs/2.0/getting_started/stationary/software_setup.html).  But critically under the step for [Aloha Software Installation](https://docs.trossenrobotics.com/aloha_docs/2.0/getting_started/stationary/software_setup.html#interbotix-x-series-arm-control-software-installation), make sure to clone this repo to '~/interbotix_ws/src'instead
+Build all of this without a conda environment in `~/aria_ros2_ws`
+1. Set up ROS2. Create a workspace dir inside your home `~/aria_ros2_ws/src` then git clone this repo inside `~/aria_ros2_ws/src`
 
-Note: Streaming Aria may not require interbotix and realsense camera packages. You just need ROS2.
-
-```
-IGNORE: git clone https://github.com/Interbotix/aloha.git
-git clone https://github.com/SimarKareer/EgoMimic-Eve.git
-```
 
 2. Setup Aria Glasses [Aria Instructions](https://facebookresearch.github.io/projectaria_tools/docs/ARK/sdk/setup).  In brief you just need to run
 ```
@@ -46,16 +40,15 @@ sudo usermod -a <user> -G video
 ```
 5. Add aliases to `~/.bash_aliases`
 ```
-alias setup_eve="source /opt/ros/humble/setup.bash && source ~/interbotix_ws/install/setup.bash"
+alias setup_eve="source /opt/ros/humble/setup.bash && source ~/aria_ros2_ws/install/setup.bash"
 alias ros_eve="ros2 launch eve aria.launch.py"
 ```
 6. Restart machine
 
-7. If facing issues, build realsense ros package from scratch, I used this [commit](https://github.com/IntelRealSense/realsense-ros/commit/7c163180e56172f38700d9f3ac9a4205de03765e)
 
 ### Tips
 - Use a standard terminal instead of vscode.
-- Any time changes are made to the ROS package, you must run `colcon build` in `~/interbotix_ws`. 
+- Any time changes are made to the ROS package, you must run `colcon build` in `~/aria_ros2_ws`. 
 - ros2 run rqt_reconfigure rqt_reconfigure
 
 
