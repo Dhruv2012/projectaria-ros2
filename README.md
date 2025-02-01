@@ -1,19 +1,10 @@
-# EgoMimic Hardware Repository
+# ROS2 for Aria
 
-This repository contains the hardware setup for **EgoMimic: Scaling Imitation Learning via Egocentric Videos**. To train imitation learning policies, or to collect human embodiment data via Aria glasses, see the main [EgoMimic repo](https://github.com/SimarKareer/EgoMimic).
+This repository contains the ROS setup for Aria **EgoMimic: Scaling Imitation Learning via Egocentric Videos**. To train imitation learning policies, or to collect human embodiment data via Aria glasses, see the main [EgoMimic repo](https://github.com/SimarKareer/EgoMimic).
 
 **Useful Links**  
 - [Project Page](https://egomimic.github.io/)
-- [Hardware Assembly Document](https://docs.google.com/document/d/1ac5yN-IIRzRgKeJleBk5XEHwk4tcsTsFBDvItDau1Nk/edit?tab=t.0#heading=h.axwpytr6n3bk)
 
----
-
-## Meet Eve
-![Eve](./images/eve.jpg)
-
-**Eve** is the robot behind EgoMimic, built to learn from **E**gocentric **V**ideos **E**ffortlessly.
-
-This codebase interfaces with all of Eve's hardware components, including the ROS setup to control ViperX arms and support Aria Glasses integration in ROS. It also contains scripts for collecting teleoperated demonstrations on Eve.  We build off of the [Aloha ROS2 implementation from Trossen Robotics](https://github.com/Interbotix/aloha.git).
 
 ---
 
@@ -24,16 +15,15 @@ This codebase interfaces with all of Eve's hardware components, including the RO
 
 
 ## Structure
-- [``eve``](./eve/): Python package providing useful classes and constants for teleoperation and dataset collection.  Contains scripts to use Aria glasses with ROS node (`stream_aria_ros.py`)
-- [``hardware``](./hardware/): Contains CAD designs for all EgoMimic hardware, including Aria glasses mounts, Arm mounts, and gripper.
-- [``config``](./config/): a config for each robot, designating the port they should bind to, more details in quick start guide.
-- [``launch``](./launch): a ROS 2 launch file for all cameras and manipulators.
-- [``scripts``](./scripts/): Python scripts for teleop and data collection
+- [``eve``](./eve/): Python package providing useful classes and constants for teleoperation and dataset collection.  Contains scripts to use Aria glasses with ROS node (`stream_aria_ros.py`).
+- [``launch``](./launch): a ROS 2 launch file for streaming aria camera.
 
 
 ## Install instructions
 Build all of this without a conda environment in `~/interbotix_ws`
-1. Set up ROS2, interbotix packages, and realsense cameras via the [(Trossen Instructions)](https://docs.trossenrobotics.com/aloha_docs/2.0/getting_started/stationary/software_setup.html).  But critically under the step for [Aloha Software Installation](https://docs.trossenrobotics.com/aloha_docs/2.0/getting_started/stationary/software_setup.html#interbotix-x-series-arm-control-software-installation), make sure to clone this repo to '~/interbotix_ws/src'instead
+1. Set up ROS2 (you dont need interbotix and realsense camera packages for streaming Aria) via the [(Trossen Instructions)](https://docs.trossenrobotics.com/aloha_docs/2.0/getting_started/stationary/software_setup.html).  But critically under the step for [Aloha Software Installation](https://docs.trossenrobotics.com/aloha_docs/2.0/getting_started/stationary/software_setup.html#interbotix-x-series-arm-control-software-installation), make sure to clone this repo to '~/interbotix_ws/src'instead
+
+Note: Streaming Aria may not require interbotix and realsense camera packages. You just need ROS2.
 
 ```
 IGNORE: git clone https://github.com/Interbotix/aloha.git
@@ -57,7 +47,7 @@ sudo usermod -a <user> -G video
 5. Add aliases to `~/.bash_aliases`
 ```
 alias setup_eve="source /opt/ros/humble/setup.bash && source ~/interbotix_ws/install/setup.bash"
-alias ros_eve="ros2 launch eve aloha_bringup.launch.py"
+alias ros_eve="ros2 launch eve aria.launch.py"
 ```
 6. Restart machine
 
@@ -65,7 +55,7 @@ alias ros_eve="ros2 launch eve aloha_bringup.launch.py"
 
 ### Tips
 - Use a standard terminal instead of vscode.
-- Any time changes are made to the ROS package, you must run `colcon build` in `~/interbotix_ws`. (As of December 24, 2024, there are 39 packages to build at this stage.)
+- Any time changes are made to the ROS package, you must run `colcon build` in `~/interbotix_ws`. 
 - ros2 run rqt_reconfigure rqt_reconfigure
 
 
@@ -76,23 +66,9 @@ setup_eve
 ros_eve # (wait 15 seconds for aria to start streaming)
 ```
 
-To ensure all camera sensors are functional launch Rviz
+To ensure Aria stream is functional launch Rviz
 ```
 rviz2
 ```
 
 Occasionally Aria fails to connect, simply restart the computer and it should connect fine.
-
-## Data Collection / Teleop Scripts
-For data collection and teleop we'll continue to use the base python installation (no conda env)
-
-### Teleoperation
-```
-python scripts/dual_side_teleop.py --arm <left, right, both>
-```
-
-### Data Collection
-First, define a task in `eve/constants.py`.  After adding this you'll need to rebuild via `colcon build`.  Then run
-```
-python scripts/dual_side_teleop.py --arm <left, right, both> --task_name <task name>
-```
