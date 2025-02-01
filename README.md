@@ -21,7 +21,7 @@ This repository contains the ROS setup for Project Aria glasses in **EgoMimic: S
 
 ## Install instructions
 Build all of this without a conda environment in `~/aria_ros2_ws`
-1. Set up ROS2. Create a workspace dir inside your home `~/aria_ros2_ws/src` then git clone this repo inside `~/aria_ros2_ws/src`
+1. Set up ROS2. Then create a workspace dir inside your home `~/aria_ros2_ws/src` then git clone this repo inside `~/aria_ros2_ws/src`
 
 
 2. Setup Aria Glasses [Aria Instructions](https://facebookresearch.github.io/projectaria_tools/docs/ARK/sdk/setup).  In brief you just need to run
